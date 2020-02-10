@@ -1,18 +1,18 @@
 #This code extract meta-data from camera-trap photos. 
 from PIL import Image
-import pytesseract as tes
+import pytesseract as tes # this is the key package used in this OCR
 import os
 from pathlib import Path
 
-global Reconyx_entries = {"date_time":(0,0,750,50),"type":(750,0,1000,50),"temp":(1720,0,1920,50), "site":(0,1030,400,1080)} # dangerous thing, but it can beused globally
+global Reconyx_entries = {"date_time":(0,0,750,50),"sequence":(750,0,1000,50),"temp":(1720,0,1920,50), "site":(0,1030,400,1080)} # dangerous global variables, but it can be used globally. Basically the position of the different meta-data
 
-def extract_data(Img_dir,entries_range = Reconyx_entries): # image is the image, entries should be the meta-data want to extract, should be an dictionary, with range of that metadata
-    Img = Image.open(Img_dir)
-    res = {}
+def extract_data(Img_dir,entries_range = Reconyx_entries): # @Img_dir is the path of image, @entries_range is the meta-data want to extract, should be an dictionary, with range of that metadata, see Reconyx_entries for an example
+    Img = Image.open(Img_dir) # open the image
+    res = {} # result dictionary
     
     for entry in list(entries_range.keys()):
-        img_temp = Img.crop(entries_range[entry])
-        text = tes.image_to_string(img_temp)
+        img_temp = Img.crop(entries_range[entry]) # crop out the part of interest
+        text = tes.image_to_string(img_temp) # get the meta-data
         if entry=="date_time":
             text = text.replace(";",":")
             text = text.replace("O","0") # several simple proof reading
@@ -42,6 +42,6 @@ def extract_data_batch(Img_List,entries_range = Reconyx_entries,path = False,sav
     return(res)
 
 
-## TODO: Add proof reading  
+## TODO: Add proof readings 
 
 
